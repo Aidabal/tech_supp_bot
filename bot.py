@@ -5,6 +5,11 @@ from telebot import types
 
 bot = telebot.TeleBot(config.token)
 
+updater = Updater(token, use_context=True)
+
+updater.start_polling()
+updater.idle()
+
 @bot.message_handler(commands=['start'])
 def SayHello(message) :
 
@@ -18,6 +23,11 @@ def SayHello(message) :
 	bot.send_message(message.chat.id, "1.Вопрос по использованию UMAG\n2.Технические неполадки")
 
 @bot.message_handler(content_types=["text"])
+
+def on_start(update, context):
+	chat = update.effective_chat
+	context.bot.send_message(chat_id=chat.id, text="Привет, я  бот")
+	
 def WhatHappend(message):
 	if message.chat.type == 'private':
 		if message.text == 'Вопрос':
@@ -27,3 +37,8 @@ def WhatHappend(message):
 		else: bot.send_message(message.chat.id, "<Примерное решение>Спасибо за обращение!")
 	
 bot.polling(none_stop=True)
+
+dispatcher = updater.dispatcher
+dispatcher.add_handler(CommandHandler("start", on_start))
+updater.start_polling()
+updater.idle()
