@@ -5,6 +5,11 @@ from telebot import types
 
 bot = telebot.TeleBot(config.token)
 
+updater = Updater(token, use_context=True)
+
+updater.start_polling()
+updater.idle()
+
 @bot.message_handler(commands=['start'])
 def SayHello(message) :
 
@@ -27,3 +32,6 @@ def WhatHappend(message):
 		else: bot.send_message(message.chat.id, "<Примерное решение>Спасибо за обращение!")
 	
 bot.polling(none_stop=True)
+
+dispatcher = updater.dispatcher
+dispatcher.add_handler(CommandHandler("start", on_start))
